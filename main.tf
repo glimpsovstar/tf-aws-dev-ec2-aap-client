@@ -44,4 +44,5 @@ resource "aap_job" "vm_demo_job" {
   inventory_id    = aap_inventory.vm_inventory.id
   extra_vars      = jsonencode({})
   triggers        = local.vm_names
+  depends_on      = [aap_inventory.vm_inventory]
 }
