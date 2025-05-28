@@ -51,3 +51,19 @@ variable "aap_token" {
   description = "AAP API token"
   sensitive   = true
 }
+
+variable "aap_host" {
+  type        = string
+  description = "AAP API host (e.g., https://aap.example.com)"
+}
+
+variable "aap_username" {
+  type        = string
+  description = "AAP API username"
+}
+
+variable "aap_password" {
+  type        = string
+  description = "AAP API password"
+  sensitive   = true
+}

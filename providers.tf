@@ -15,4 +15,8 @@ provider "aws" {
   region = var.aws_region
 }
 
-
+provider "aap" {
+  host     = var.aap_host
+  username = var.aap_username
+  password = var.aap_password
+}
