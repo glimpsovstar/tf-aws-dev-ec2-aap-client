@@ -27,19 +27,16 @@ locals {
 resource "aap_inventory" "vm_inventory" {
   name        = "Better Together Demo - ${var.TFC_WORKSPACE_ID}"
   description = "Inventory for VMs built with HCP Terraform and managed by AAP"
-  variables   = jsonencode({}) # Empty variables block since vm_config is removed
+  variables   = jsonencode({})
 }
 
 resource "aap_host" "vm_host" {
   inventory_id = aap_inventory.vm_inventory.id
-  name         = local.vm_names # Use the single hostname from locals
+  name         = local.vm_names.hostname # Fixed: Use the string value from the map
 
   variables = jsonencode({
-    ansible_host = aws_instance.rhel_instance.public_ip # Reference the single EC2 instance
+    ansible_host = aws_instance.rhel_instance.public_ip
   })
-
-  # Removed groups since aap_group is commented out and not used
-  # groups = [] # Uncomment and add group IDs if needed later
 }
 
 resource "aap_job" "vm_demo_job" {
