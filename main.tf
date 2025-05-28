@@ -13,10 +13,10 @@ resource "aws_ec2_instance_state" "rhel_instance_state" {
   state       = "running"
 }
 
-resource "aws_eip" "instance-eip" {
-  instance = aws_instance.rhel_instance.id
-  vpc      = true
-}
+#resource "aws_eip" "instance-eip" {
+#  instance = aws_instance.rhel_instance.id
+#  vpc      = true
+#}
 
 locals {
   vm_names = {
