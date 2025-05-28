@@ -19,7 +19,9 @@ resource "aws_eip" "instance-eip" {
 }
 
 locals {
-  vm_names = ["rhel9-vm"] # Static hostname for the single VM
+  vm_names = {
+    hostname = "rhel9-vm" # Map with a single key-value pair
+  }
 }
 
 resource "aap_inventory" "vm_inventory" {
@@ -30,7 +32,7 @@ resource "aap_inventory" "vm_inventory" {
 
 resource "aap_host" "vm_host" {
   inventory_id = aap_inventory.vm_inventory.id
-  name         = local.vm_names[0] # Use the single hostname from locals
+  name         = local.vm_names # Use the single hostname from locals
 
   variables = jsonencode({
     ansible_host = aws_instance.rhel_instance.public_ip # Reference the single EC2 instance
