@@ -28,9 +28,11 @@ resource "null_resource" "wait_for_status_checks" {
   provisioner "local-exec" {
     command = <<EOT
       INSTANCE_ID=${aws_instance.rhel_instance.id}
-      echo "Waiting for EC2 status checks to pass for $INSTANCE_ID..."
+      REGION="${var.aws_region}"
+
+      echo "Waiting for EC2 status checks to pass for $INSTANCE_ID in $REGION..."
       while true; do
-        OUTPUT=$(aws ec2 describe-instance-status --instance-id $INSTANCE_ID --output json)
+        OUTPUT=$(aws ec2 describe-instance-status --instance-id $INSTANCE_ID --region $REGION --output json)
         INSTANCE_STATUS=$(echo $OUTPUT | jq -r '.InstanceStatuses[0].InstanceStatus.Status')
         SYSTEM_STATUS=$(echo $OUTPUT | jq -r '.InstanceStatuses[0].SystemStatus.Status')
 
