@@ -24,19 +24,37 @@ locals {
   }
 }
 
-resource "null_resource" "wait_for_ssh" {
+resource "null_resource" "wait_for_status_checks" {
   provisioner "local-exec" {
-    command = "sleep 30" # or use ssh check script
+    command = <<EOT
+      INSTANCE_ID=${aws_instance.rhel_instance.id}
+      echo "Waiting for EC2 status checks to pass for $INSTANCE_ID..."
+      while true; do
+        OUTPUT=$(aws ec2 describe-instance-status --instance-id $INSTANCE_ID --output json)
+        INSTANCE_STATUS=$(echo $OUTPUT | jq -r '.InstanceStatuses[0].InstanceStatus.Status')
+        SYSTEM_STATUS=$(echo $OUTPUT | jq -r '.InstanceStatuses[0].SystemStatus.Status')
+
+        if [ "$INSTANCE_STATUS" = "ok" ] && [ "$SYSTEM_STATUS" = "ok" ]; then
+          echo "EC2 instance passed 2/2 status checks."
+          break
+        else
+          echo "Waiting... Instance: $INSTANCE_STATUS, System: $SYSTEM_STATUS"
+          sleep 10
+        fi
+      done
+    EOT
+    interpreter = ["/bin/bash", "-c"]
   }
 
   depends_on = [aws_ec2_instance_state.rhel_instance_state]
 }
 
+
 resource "aap_inventory" "vm_inventory" {
   name        = "Better Together Demo - ${var.TFC_WORKSPACE_ID}"
   description = "Inventory for VMs built with HCP Terraform and managed by AAP"
   variables   = jsonencode({})
-  depends_on  = [null_resource.wait_for_ssh]
+  depends_on  = [null_resource.wait_for_status_checks]
 }
 
 resource "aap_host" "vm_host" {
