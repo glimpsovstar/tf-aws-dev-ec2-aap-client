@@ -24,10 +24,19 @@ locals {
   }
 }
 
+resource "null_resource" "wait_for_ssh" {
+  provisioner "local-exec" {
+    command = "sleep 30" # or use ssh check script
+  }
+
+  depends_on = [aws_ec2_instance_state.rhel_instance_state]
+}
+
 resource "aap_inventory" "vm_inventory" {
   name        = "Better Together Demo - ${var.TFC_WORKSPACE_ID}"
   description = "Inventory for VMs built with HCP Terraform and managed by AAP"
   variables   = jsonencode({})
+  depends_on  = [null_resource.wait_for_ssh]
 }
 
 resource "aap_host" "vm_host" {
