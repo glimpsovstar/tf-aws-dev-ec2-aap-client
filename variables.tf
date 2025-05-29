@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "ami_id" {
   type        = string
-  default     = "ami-0d699116d22d2cb59" # RHEL9 - 2025-05-28
+  default     = "ami-0df3f3adca5bd27bd" # RHEL9 - 2025-05-29
   description = "The id of the machine image (AMI) to use for the server."
 }
 
