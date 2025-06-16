@@ -27,7 +27,7 @@ variable "ec2_tags" {
     Environment = "Dev"
     Owner       = "djoo"
     Name        = "tf-aws-dev-ec2-RHEL9"
-    Test_Tag    = "This is a demo for ASC"
+    Test_Tag    = "This is a demo for Do Cloud Right Melbourne"
   }
 }
 
